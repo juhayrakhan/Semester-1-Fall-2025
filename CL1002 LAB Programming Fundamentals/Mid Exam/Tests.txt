@@ -1,0 +1,224 @@
+
+
+
+//-------------------------------------- Q1 -----------------------------------------------------------------------
+
+
+
+TEST(WordBufferTest, BasicWordCounting) {
+    WordBuffer wb;
+
+    char input[] = "hello world hello";
+
+    wb.processSentence(input);
+
+    EXPECT_EQ(wb.getWordCount(), 2);
+
+    EXPECT_STREQ(wb.getWord(0), "hello");
+    EXPECT_EQ(wb.getFrequency(0), 2);
+
+    EXPECT_STREQ(wb.getWord(1), "world");
+    EXPECT_EQ(wb.getFrequency(1), 1);
+}
+
+
+
+TEST(WordBufferTest, PunctuationRemoval) {
+    WordBuffer wb;
+
+    char input[] = "hello, world. hello";
+
+    wb.processSentence(input);
+
+    EXPECT_EQ(wb.getWordCount(), 2);
+
+    EXPECT_STREQ(wb.getWord(0), "hello");
+    EXPECT_EQ(wb.getFrequency(0), 2);
+
+    EXPECT_STREQ(wb.getWord(1), "world");
+    EXPECT_EQ(wb.getFrequency(1), 1);
+}
+
+
+
+TEST(WordBufferTest, DuplicateHandling) {
+    WordBuffer wb;
+
+    char input[] = "cat dog cat dog cat";
+
+    wb.processSentence(input);
+
+    EXPECT_EQ(wb.getWordCount(), 2);
+
+    EXPECT_STREQ(wb.getWord(0), "cat");
+    EXPECT_EQ(wb.getFrequency(0), 3);
+
+    EXPECT_STREQ(wb.getWord(1), "dog");
+    EXPECT_EQ(wb.getFrequency(1), 2);
+}
+
+
+TEST(WordBufferTest, FrequencySorting) {
+    WordBuffer wb;
+
+    char input[] = "apple banana apple apple orange banana";
+
+    wb.processSentence(input);
+
+    EXPECT_STREQ(wb.getWord(0), "apple");
+    EXPECT_EQ(wb.getFrequency(0), 3);
+
+    EXPECT_STREQ(wb.getWord(1), "banana");
+    EXPECT_EQ(wb.getFrequency(1), 2);
+
+    EXPECT_STREQ(wb.getWord(2), "orange");
+    EXPECT_EQ(wb.getFrequency(2), 1);
+}
+
+
+
+//----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+//-------------------------------------- Q2 -----------------------------------------------------------------------
+
+
+
+TEST(MengerCarpetTest, CenterHoleLevel1) {
+    PatternGenerator pg;
+    pg.generate();
+
+    // The biggest center block should be empty
+    EXPECT_EQ(pg.getCell(13,13), ' ');
+}
+
+
+TEST(MengerCarpetTest, CenterBlockLevel1) {
+    PatternGenerator pg;
+    pg.generate();
+
+    for(int r = 9; r < 18; r++) {
+        for(int c = 9; c < 18; c++) {
+            EXPECT_EQ(pg.getCell(r,c), ' ');
+        }
+    }
+}
+
+
+TEST(MengerCarpetTest, RecursiveHoleLevel2) {
+    PatternGenerator pg;
+    pg.generate();
+
+    // center of top-left 9x9 block
+    EXPECT_EQ(pg.getCell(4,4), ' ');
+
+    // center of top-right 9x9 block
+    EXPECT_EQ(pg.getCell(4,22), ' ');
+
+    // center of bottom-left 9x9 block
+    EXPECT_EQ(pg.getCell(22,4), ' ');
+
+    // center of bottom-right 9x9 block
+    EXPECT_EQ(pg.getCell(22,22), ' ');
+}
+
+
+TEST(MengerCarpetTest, CornersRemainFilled) {
+    PatternGenerator pg;
+    pg.generate();
+
+    EXPECT_EQ(pg.getCell(0,0), '#');
+    EXPECT_EQ(pg.getCell(0,26), '#');
+    EXPECT_EQ(pg.getCell(26,0), '#');
+    EXPECT_EQ(pg.getCell(26,26), '#');
+}
+
+
+//----------------------------------------------------------------------------------------------------------------
+
+
+
+//-------------------------------------- Q3 -----------------------------------------------------------------------
+
+
+
+
+TEST(AnagramFinderTest, BasicAnagramCase) {
+    AnagramFinder af;
+
+    char s[] = "cbaebabacd";
+    char p[] = "abc";
+    int count = 0;
+
+    int* result = af.findAnagrams(s, p, count);
+
+    EXPECT_EQ(count, 2);
+    EXPECT_EQ(result[0], 0);
+    EXPECT_EQ(result[1], 6);
+
+    delete[] result;
+}
+
+
+TEST(AnagramFinderTest, OverlappingAnagrams) {
+    AnagramFinder af;
+
+    char s[] = "abab";
+    char p[] = "ab";
+    int count = 0;
+
+    int* result = af.findAnagrams(s, p, count);
+
+    EXPECT_EQ(count, 3);
+    EXPECT_EQ(result[0], 0);
+    EXPECT_EQ(result[1], 1);
+    EXPECT_EQ(result[2], 2);
+
+    delete[] result;
+}
+
+
+TEST(AnagramFinderTest, NoAnagrams) {
+    AnagramFinder af;
+
+    char s[] = "abcdefg";
+    char p[] = "hij";
+    int count = 0;
+
+    int* result = af.findAnagrams(s, p, count);
+
+    EXPECT_EQ(count, 0);
+
+    delete[] result;
+}
+
+
+TEST(AnagramFinderTest, CaseSensitiveCheck) {
+    AnagramFinder af;
+
+    char s[] = "aAbB";
+    char p[] = "ab";
+    int count = 0;
+
+    int* result = af.findAnagrams(s, p, count);
+
+    // Should detect case sensitivity
+    EXPECT_EQ(count, 0);
+
+    delete[] result;
+}
+
+
+
+//----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
